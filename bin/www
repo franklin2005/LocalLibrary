@@ -4,6 +4,10 @@
  * Module dependencies.
  */
 
+require('dotenv').config();
+
+
+dotenv.config();
 var app = require('../app');
 var debug = require('debug')('locallibrary:server');
 var http = require('http');
@@ -14,6 +18,22 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+
+//set up mongoose connection
+const mongoose = require('mongoose');
+
+mongoose.set('strictQuery', false);
+const mongoDB = process.env.DB_URI; 
+
+async function connectMongoose(){
+  await mongoose.connect(mongoDB);
+}
+  try {
+    connectMongoose();
+  } catch (err){
+    console.error('failed to connect to MongoDB', err)
+    process.exit(1);
+  }
 
 /**
  * Create HTTP server.
