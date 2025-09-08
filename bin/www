@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 
-require('dotenv').config();
-
-
+const dotenv = require('dotenv');
 dotenv.config();
+
+
+
 var app = require('../app');
 var debug = require('debug')('locallibrary:server');
 var http = require('http');
