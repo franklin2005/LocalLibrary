@@ -28,5 +28,9 @@ BookInstanceSchema.virtual("due_back_formatted").get(function () {
     : ""; // Return an empty string if due_back is not set
 });
 
+BookInstanceSchema.virtual("due_back_yyyy_mm_dd").get(function () {
+  return DateTime.fromJSDate(this.due_back).toISODate(); // format 'YYYY-MM-DD'
+});
+
 // Export model
 module.exports = mongoose.model("BookInstance", BookInstanceSchema);

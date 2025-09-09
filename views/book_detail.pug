@@ -1,34 +1,65 @@
 extends layout
 
 block content
-  h1 Title: !{book.title}
+  h1 Title: #{book.title}
 
-  p #[strong Author: ]
+  p
+    strong Author:
+    | 
     a(href=book.author.url) #{book.author.name}
-  p #[strong Summary:] !{book.summary}
-  p #[strong ISBN:] #{book.isbn}
-  p #[strong Genre: ]
-    each val, index in book.genre
-      a(href=val.url) #{val.name}
-      if index < book.genre.length - 1
-        |,&nbsp;
 
-  div(style='margin-left:20px;margin-top:20px')
+  p
+    strong Summary:
+    |  #{book.summary}
+
+  p
+    strong ISBN:
+    |  #{book.isbn}
+
+  p
+    strong Genre:
+    | 
+    if book.genre && book.genre.length
+      each val, index in book.genre
+        a(href=val.url) #{val.name}
+        if index < book.genre.length - 1
+          | , 
+    else
+      | (none)
+
+  .mt-4(style='margin-left:20px;margin-top:20px')
     h2(style='font-size: 1.5rem;') Copies
 
-    each val in book_instances
-      hr
-      if val.status=='Available'
-        p.text-success #{val.status}
-      else if val.status=='Maintenance'
-        p.text-danger #{val.status}
-      else
-        p.text-warning #{val.status}
-      p #[strong Imprint:] #{val.imprint}
-      if val.status!='Available'
-        p #[strong Due back:] #{val.due_back}
-      p #[strong Id: ]
-        a(href=val.url) #{val._id}
+    if book_instances && book_instances.length
+      each val in book_instances
+        hr
+        if val.status=='Available'
+          p.text-success #{val.status}
+        else if val.status=='Maintenance'
+          p.text-danger #{val.status}
+        else
+          p.text-warning #{val.status}
 
+        p
+          strong Imprint:
+          |  #{val.imprint}
+
+        if val.status!='Available'
+          p
+            strong Due back:
+            |  #{val.due_back_formatted}   // <- usa el virtual
+
+        p
+          strong Id:
+          |  
+          a(href=val.url) #{val._id}
+      hr
     else
       p There are no copies of this book in the library.
+
+    // Solo mostrar “Delete” si NO hay copias
+    if !book_instances || book_instances.length === 0
+      p
+        a(href=`/catalog/book/${book._id}/delete`) Delete Book
+    p
+      a(href=`/catalog/book/${book._id}/update`) Update Book
